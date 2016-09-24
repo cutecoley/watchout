@@ -1,5 +1,9 @@
 /* your beautiful css styling goes here! */
-
+.board {
+  height: 450px;
+  width: 700px;
+  background-image: url('space.jpg');
+}
 /* Note: an asteroid image is included in this repo.
 Feel free to use it if you like. */
 

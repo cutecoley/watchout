@@ -62,14 +62,15 @@ var drag = d3.behavior.drag()
 //Player
 var p = d3.select('.board').select('svg').append('circle').data(player)
   .attr('transform', 'translate(' + player[0].x + ',' + player[0].y + ')')
-  .attr('r', '10')
+  .attr('r', '15')
   .style('cursor', 'pointer')
+  .attr('fill', 'yellow')
   .call(drag);
 
 
 var checkCollision = function(x, y) {
 
-  var threshold = 20;
+  var threshold = 30;
   var a = player[0].x;
   var b = x;
   var c = player[0].y;
@@ -126,8 +127,8 @@ var update = function (data) {
     .attr('href', enemySrc)
     .attr('x', function(d) { return d.x; })
     .attr('y', function(d) { return d.y; })
-    .attr('width', 20)
-    .attr('height', 20);
+    .attr('width', 30)
+    .attr('height', 30);
 
 };
 
@@ -139,6 +140,6 @@ setInterval(collisionStart, 10);
 update(enemies());
 setInterval(function() {
   update(enemies());
-}, 1000);
+}, 500);
 
 
