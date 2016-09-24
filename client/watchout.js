@@ -18,17 +18,14 @@ var enemies = function() {
 };
 
 var player = [{
-  cx: 350,
-  cy: 225
+  x: 350,
+  y: 225
 }];
 
-    
+var score = 0;
+var collisions = 0;
+var highscore = 0;
 
-
-var drag = d3.behavior.drag()
-      .on('drag', function(d, i) {
-        //
-      });
    
 //Scoreboard
 d3.select('body').insert('div', ':first-child').attr('class', 'scoreboard').selectAll('div')
@@ -52,10 +49,64 @@ d3.select('.board').append('svg')
   .style('border-color', 'red')
   .style('border-style', 'solid');
 
+//Drag
+var drag = d3.behavior.drag()
+      .on('drag', function(d) {
+        var x = d3.event.x;
+        var y = d3.event.y;
+        d.x = x;
+        d.y = y;
+        p.attr('transform', 'translate(' + x + ',' + y + ')');
+      });
 
-d3.select('.board').select('svg').append('circle').data(player)
-
+//Player
+var p = d3.select('.board').select('svg').append('circle').data(player)
+  .attr('transform', 'translate(' + player[0].x + ',' + player[0].y + ')')
+  .attr('r', '10')
+  .style('cursor', 'pointer')
   .call(drag);
+
+
+var checkCollision = function(x, y) {
+
+  var threshold = 20;
+  var a = player[0].x;
+  var b = x;
+  var c = player[0].y;
+  var d = y;
+  var distance = Math.sqrt (Math.pow((player[0].x - x), 2) + Math.pow((player[0].y - y), 2));
+  //debugger;
+  if (distance <= threshold) {
+    isCollided = true;
+    setTimeout(function() {
+      isCollided = false;
+    }, 1000);
+    if (score > highscore) {
+      highscore = score;
+    }
+    score = 0;
+    updateScore();
+    collisions++;
+    d3.select('.scoreboard').select('.collisions').select('span').text(collisions);
+    d3.select('.scoreboard').select('.highscore').select('span').text(highscore);
+  }
+};
+
+var updateScore = function() {
+  d3.select('.scoreboard').select('.current').select('span').text(score);
+};
+
+var isCollided = false;
+var collisionStart = function() {
+  if (!isCollided) {
+    var asteroids = d3.select('.board').selectAll('image');
+    asteroids.each(function() {
+      var single = d3.select(this);
+      checkCollision(single.attr('x'), single.attr('y'));
+    });
+  }
+};
+
 
 
 //UPDATE
@@ -79,6 +130,12 @@ var update = function (data) {
     .attr('height', 20);
 
 };
+
+setInterval( function() {
+  score++;
+  updateScore();
+}, 50);
+setInterval(collisionStart, 10);
 update(enemies());
 setInterval(function() {
   update(enemies());
