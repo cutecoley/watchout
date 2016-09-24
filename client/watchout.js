@@ -29,7 +29,6 @@ d3.select('body').insert('div', ':first-child').attr('class', 'scoreboard').sele
   ]).enter().append('div')
     .attr('class', function(d) { return d.class; })
     .text(function(d) { return d.text; });
-
 d3.select('.scoreboard').selectAll('div').insert('span').text('0');
 //d3.select('.board').style('border', '3px solid red');
 d3.select('.board').append('svg')
@@ -57,15 +56,13 @@ var update = function (data) {
     .attr('href', enemySrc)
     .attr('x', function(d) { return d.x; })
     .attr('y', function(d) { return d.y; })
-    .attr('width', 50)
-    .attr('height', 50);
+    .attr('width', 20)
+    .attr('height', 20);
 
 };
 update(enemies());
 setInterval(function() {
   update(enemies());
-}, 1100);
-
-//d3 interval calls update every so seconds -- update(enemies())
+}, 1000);
 
 
