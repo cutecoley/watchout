@@ -17,7 +17,20 @@ var enemies = function() {
   return result;
 };
 
+var player = [{
+  cx: 350,
+  cy: 225
+}];
 
+    
+
+
+var drag = d3.behavior.drag()
+      .on('drag', function(d, i) {
+        //
+      });
+   
+//Scoreboard
 d3.select('body').insert('div', ':first-child').attr('class', 'scoreboard').selectAll('div')
   .data([
     { class: 'highscore',
@@ -30,13 +43,19 @@ d3.select('body').insert('div', ':first-child').attr('class', 'scoreboard').sele
     .attr('class', function(d) { return d.class; })
     .text(function(d) { return d.text; });
 d3.select('.scoreboard').selectAll('div').insert('span').text('0');
-//d3.select('.board').style('border', '3px solid red');
+
+//Gameboard
 d3.select('.board').append('svg')
   .attr('width', gameOptions.width)
   .attr('height', gameOptions.height)
   .style('border-size', '3px')
   .style('border-color', 'red')
   .style('border-style', 'solid');
+
+
+d3.select('.board').select('svg').append('circle').data(player)
+
+  .call(drag);
 
 
 //UPDATE
