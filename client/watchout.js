@@ -22,33 +22,67 @@ var player = [{
   y: 225
 }];
 
+var theSBoard = [
+  { class: 'highscore',
+    text: 'High score: ',
+    x: gameOptions.width - 125,
+    y: 20,
+    val: 0},
+  { class: 'current',
+    text: 'Current score: ',
+    x: gameOptions.width - 125,
+    y: 40,
+    val: 0}, 
+  { class: 'collisions',
+    text: 'Collisions: ',
+    x: gameOptions.width - 125,
+    y: 60,
+    val: 0}
+];
+
 var score = 0;
 var collisions = 0;
 var highscore = 0;
 
    
 //Scoreboard
-d3.select('body').insert('div', ':first-child').attr('class', 'scoreboard').selectAll('div')
-  .data([
-    { class: 'highscore',
-      text: 'High score: '},
-    { class: 'current',
-      text: 'Current score: '}, 
-    { class: 'collisions',
-      text: 'Collisions: '}
-  ]).enter().append('div')
-    .attr('class', function(d) { return d.class; })
-    .text(function(d) { return d.text; });
-d3.select('.scoreboard').selectAll('div').insert('span').text('0');
+// d3.select('body').insert('div', ':first-child').attr('class', 'scoreboard').selectAll('div')
+//   .data([
+//     { class: 'highscore',
+//       text: 'High score: '},
+//     { class: 'current',
+//       text: 'Current score: '}, 
+//     { class: 'collisions',
+//       text: 'Collisions: '}
+//   ]).enter().append('div')
+//     .attr('class', function(d) { return d.class; })
+//     .text(function(d) { return d.text; });
+// d3.select('.scoreboard').selectAll('div').insert('span').text('0');
 
 //Gameboard
-d3.select('.board').append('svg')
+var gameBoard = d3.select('.board').append('svg')
   .attr('width', gameOptions.width)
   .attr('height', gameOptions.height)
   .style('border-size', '3px')
   .style('border-color', 'red')
   .style('border-style', 'solid');
 
+//Scoreboard
+var updateScoreBoard = function () {
+
+  var selection = d3.select('.board').select('svg').selectAll('text');
+
+  //UPDATE
+  selection.data(theSBoard).text(function(d) { return d.text + ' ' + d.val; });
+
+  //ENTER
+  selection.data(theSBoard).enter().append('text')
+    .attr('class', function(d) { return d.class; })
+    .text(function(d) { return d.text + ' ' + d.val; })
+    .attr('x', function(d) { return d.x; })
+    .attr('y', function(d) { return d.y; })
+    .attr('fill', 'white');
+};
 //Drag
 var drag = d3.behavior.drag()
       .on('drag', function(d) {
@@ -81,20 +115,21 @@ var checkCollision = function(x, y) {
     isCollided = true;
     setTimeout(function() {
       isCollided = false;
-    }, 1000);
-    if (score > highscore) {
-      highscore = score;
+    }, 500);
+    if (theSBoard[1].val > theSBoard[0].val) {
+      theSBoard[0].val = theSBoard[1].val;
     }
-    score = 0;
+    theSBoard[1].val = 0;
     updateScore();
-    collisions++;
-    d3.select('.scoreboard').select('.collisions').select('span').text(collisions);
-    d3.select('.scoreboard').select('.highscore').select('span').text(highscore);
+    theSBoard[2].val++;
+    updateScoreBoard();
+    //d3.select('svg').select('.collisions').text(collisions);
+    //d3.select('svg').select('.highscore').text(highscore);
   }
 };
 
 var updateScore = function() {
-  d3.select('.scoreboard').select('.current').select('span').text(score);
+  updateScoreBoard();
 };
 
 var isCollided = false;
@@ -120,7 +155,7 @@ var update = function (data) {
   selection.transition()
     .attr('x', function(d) { return d.x; })
     .attr('y', function(d) { return d.y; })
-    .duration(1000);
+    .duration(750);
 
   //ENTER  
   selection.enter().append('image')
@@ -133,13 +168,13 @@ var update = function (data) {
 };
 
 setInterval( function() {
-  score++;
+  theSBoard[1].val++;
   updateScore();
 }, 50);
 setInterval(collisionStart, 10);
 update(enemies());
 setInterval(function() {
   update(enemies());
-}, 500);
+}, 750);
 
 
