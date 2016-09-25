@@ -12,7 +12,8 @@ var enemies = function() {
   for (var i = 0; i < gameOptions.numEnemies; i++) {
     var randX = Math.random() * gameOptions.width;
     var randY = Math.random() * gameOptions.height;
-    result.push({ id: i, x: randX, y: randY});
+    var size = Math.random() * 30 + 20;
+    result.push({ id: i, x: randX, y: randY, s: size});
   }
   return result;
 };
@@ -162,8 +163,8 @@ var update = function (data) {
     .attr('href', enemySrc)
     .attr('x', function(d) { return d.x; })
     .attr('y', function(d) { return d.y; })
-    .attr('width', 30)
-    .attr('height', 30);
+    .attr('width', function(d) { return d.s; })
+    .attr('height', function(d) { return d.s; });
 
 };
 
